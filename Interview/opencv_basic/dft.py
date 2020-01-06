@@ -20,6 +20,7 @@ def dft(img1):
     plt.title('image after HPF'), plt.xticks([]), plt.yticks([])
     plt.show()
     cv.imshow('image fft', img_back)
+    cv.waitKey(0)
     return img_back
 
 

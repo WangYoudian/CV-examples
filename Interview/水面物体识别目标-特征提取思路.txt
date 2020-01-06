@@ -12,6 +12,8 @@
 
 task：
 HSV色彩空间直方图
+or
+形态学-开操作(合适的结构元素 (1, k) (k, 1))
 
 【one possible version】
 1.灰度化，对图像进行去噪
