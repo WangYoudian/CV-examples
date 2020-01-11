@@ -58,7 +58,23 @@ def clahe_demo(image):
     gray = cv.cvtColor(image, cv.COLOR_RGB2GRAY)
     clahe = cv.createCLAHE(clipLimit=5.0, tileGridSize=(8, 8))
     dst = clahe.apply(gray)
-    cv.imshow("clahe demo", dst)
+    # cv.imshow("clahe demo", dst)
+    cv.imshow("clahe demo", cv.cvtColor(dst, cv.COLOR_GRAY2BGR))
+
+
+def clahe_rgb(image):
+    """
+    测试：有去雾效果
+    :param image:
+    :return:
+    """
+    h, w, c = image.shape
+    split_bgr = cv.split(image)
+    for i in range(c):
+        clahe = cv.createCLAHE(clipLimit=4)
+        split_bgr[i] = clahe.apply(split_bgr[i])
+    cv.merge(split_bgr, image)
+    cv.imshow("clahe rgb", image)
 
 
 def create_rgb_hist(image):
@@ -79,7 +95,7 @@ def create_rgb_hist(image):
             r = image[row, col, 2]
             index = np.int(b/bsize)*16*16 + np.int(g/bsize)*16 + np.int(r/bsize)
             rgb_hist[np.int(index), 0] = rgb_hist[np.int(index), 0] + 1
-        return rgb_hist
+    return rgb_hist
 
 
 def hist_compare(image1, image2):
@@ -102,13 +118,15 @@ if __name__ == '__main__':
     # src = cv.imread('../type2.jpg')
     # src = cv.imread('../type5.jpg')
     # src = cv.imread('../type6.jpg')
-    src = cv.imread('../lifeboat.jpg')
-    # cv.namedWindow("input image", cv.WINDOW_AUTOSIZE)
-    # cv.imshow("input image", src)
+    # src = cv.imread('../lifeboat.jpg')
+    src = cv.imread('../vague.png')
+    cv.namedWindow("input image", cv.WINDOW_AUTOSIZE)
+    cv.imshow("input image", src)
     # plot_demo(src)
-    image_hist(src)
-    equal_hist_demo(src)
+    # image_hist(src)
+    # equal_hist_demo(src)
     # clahe_demo(src)
+    clahe_rgb(src)
     # src1 = cv.imread("../type1.jpg")
     # src2 = cv.imread("../type2.jpg")
     # src2 = cv.imread("../type1.jpg")
