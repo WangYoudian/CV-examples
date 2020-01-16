@@ -73,9 +73,9 @@ def bi_means(dataset):
     label_pred = estimator.labels_  # 获取聚类标签
     centroids = estimator.cluster_centers_  # 获取聚类中心
     inertia = estimator.inertia_  # 获取聚类准则的总和
-    # with open('prediction.txt', 'w') as f:
-    #     f.write(str(label_pred))
     label_pred = label_pred.reshape([64, 76])
+    with open('prediction.txt', 'w') as f:
+        f.write(str(label_pred))
     print(label_pred)
     # cv.imshow('rough show', label_pred)
 
