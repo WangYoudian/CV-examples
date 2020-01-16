@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+from resize import resize
 
 
 class Hog_descriptor():
@@ -103,26 +104,37 @@ class Hog_descriptor():
 
 
 def hog_extractor(img):
+    """
+    通过
+    :param img:
+    :return:
+    """
     hog = cv2.HOGDescriptor()
-    img = cv2.resize(img, (128, 128), interpolation=cv2.INTER_AREA)
+    # img = cv2.resize(img, (512, 512), interpolation=cv2.INTER_AREA)
     descriptor = hog.compute(img)
     if descriptor is None:
         descriptor = []
         return descriptor, img
     else:
-        descriptor = descriptor.ravel()
+        descriptor = descriptor.ravel()  # np.array [n, 1]
         return descriptor, img
 
 
-
 if __name__ == '__main__':
+    cv2.namedWindow('input image', cv2.WINDOW_AUTOSIZE)
     img = cv2.imread('../src.jpg', cv2.IMREAD_GRAYSCALE)
-    hog = Hog_descriptor(img, cell_size=8, bin_size=8)
+    # img = cv2.imread('../lena.jpg', cv2.IMREAD_GRAYSCALE)
+    # img = resize(img, 10)
+    cv2.imshow('input image', img)
     start = cv2.getTickCount()
+    # 
+    hog = Hog_descriptor(img)
     vector, image = hog.extract()
-    # vector, image = hog_extractor(img)
+    # vector, image = hog_extractor(img)  # vector返回的是定值，不受输入参数影响？？
     end = cv2.getTickCount()
     print("Extraction costs " + str((end - start)/cv2.getTickFrequency()) + ' seconds')
     print(np.array(vector).shape)
-    plt.imshow(image, cmap=plt.cm.gray)
-    plt.show()
+    print(image.shape)
+    cv2.imshow("hog computed", image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()

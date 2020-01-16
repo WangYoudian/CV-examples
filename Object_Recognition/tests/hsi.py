@@ -1,5 +1,6 @@
 import cv2 as cv
 import numpy as np
+from resize import resize
 np.seterr(divide='ignore',invalid='ignore')
 
 def rgbtohsi(rgb_lwp_img):
@@ -49,6 +50,8 @@ def rgbtohsi(rgb_lwp_img):
 
 if __name__ == '__main__':
     src = cv.imread("../src.jpg")
+    # src = cv.imread("../lena.jpg")
+    src = resize(src, 10)
     start = cv.getTickCount()
     hsi = rgbtohsi(src)
     end = cv.getTickCount()
