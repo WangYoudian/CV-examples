@@ -60,6 +60,10 @@ class Hog_descriptor():
         return hog_vector, hog_image
 
     def global_gradient(self):
+        """
+
+        :return:
+        """
         gradient_values_x = cv2.Sobel(self.img, cv2.CV_64F, 1, 0, ksize=5)
         gradient_values_y = cv2.Sobel(self.img, cv2.CV_64F, 0, 1, ksize=5)
         gradient_magnitude = cv2.addWeighted(gradient_values_x, 0.5, gradient_values_y, 0.5, 0)
@@ -122,8 +126,9 @@ def hog_extractor(img):
 
 if __name__ == '__main__':
     cv2.namedWindow('input image', cv2.WINDOW_AUTOSIZE)
-    img = cv2.imread('../src.jpg', cv2.IMREAD_GRAYSCALE)
+    # img = cv2.imread('../src.jpg', cv2.IMREAD_GRAYSCALE)
     # img = cv2.imread('../lena.jpg', cv2.IMREAD_GRAYSCALE)
+    img = cv2.imread('../images/2.jpg', cv2.IMREAD_GRAYSCALE)
     # img = resize(img, 10)
     cv2.imshow('input image', img)
     start = cv2.getTickCount()
@@ -133,8 +138,8 @@ if __name__ == '__main__':
     # vector, image = hog_extractor(img)  # vector返回的是定值，不受输入参数影响？？
     end = cv2.getTickCount()
     print("Extraction costs " + str((end - start)/cv2.getTickFrequency()) + ' seconds')
-    print(np.array(vector).shape)
-    print(image.shape)
+    # print(np.array(vector).shape)
+    print('image shape:' + str(image.shape))
     cv2.imshow("hog computed", image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()

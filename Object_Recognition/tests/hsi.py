@@ -48,17 +48,61 @@ def rgbtohsi(rgb_lwp_img):
     return hsi_lwp_img
 
 
+def calculate(np_arr):
+    arr = list(np_arr.ravel())
+    from collections import Counter
+    counter = Counter(arr)
+    from pprint import pprint
+    pprint(counter)
+    for key, value in counter.items():
+        if value > 1000:
+            value = 255
+        else:
+            value = 0
+        np_arr[np_arr == key] = value
+    ret, binary = cv.threshold(np_arr, 0, 255, cv.THRESH_BINARY | cv.THRESH_OTSU)
+    cv.imshow("binary", binary)
+    se = cv.getStructuringElement(cv.MORPH_RECT, (3, 3), (-1, -1))
+    dilate = cv.dilate(binary, se, None, (-1, -1), 1)
+    erode = cv.erode(dilate, se, None, (-1, -1), 1)
+
+    # 显示
+    cv.imshow("erode", erode)
+    cv.imshow("dilate", dilate)
+    return dilate
+
+
 if __name__ == '__main__':
-    src = cv.imread("../src.jpg")
-    # src = cv.imread("../lena.jpg")
+    # FOR TEST
+    # src = cv.imread('../src.jpg')
+    # src = cv.imread('../background/1.jpg')
+    # src = cv.imread('../background/2.jpg')
+    # src = cv.imread('../background/10.jpg')
+    # src = cv.imread('../background/4.jpg')
+    # src = cv.imread('../background/5.jpg')
+    # src = cv.imread('../background/6.jpg')
+    # src = cv.imread('../background/7.jpg')
+    # src = cv.imread('../background/8.jpg')
+    # src = cv.imread('../background/9.jpg')
+    # src = cv.imread('../background.jpg')
+
+    # FOR EXPERIMENT
+    # src = cv.imread('../images/2.jpg')
+    src = cv.imread('../images/26.jpg')
     src = resize(src, 10)
     start = cv.getTickCount()
     hsi = rgbtohsi(src)
     end = cv.getTickCount()
     print('Function costs ' + str((end - start)/cv.getTickFrequency()) + ' second(s)')
     cv.imshow('rgb_lwpImg', src)
-    cv.imshow('hsi_lwpImg', hsi)
-    print(hsi.shape)
+    cv.imshow('hsi_lwpImg', hsi[:,:,0])
+    print(hsi[:,:,0].max(), hsi[:,:,0].min())
+    H = hsi[:,:,0]
+    calculate(H)
+    cv.imwrite('rgb_lwpImg.jpg', src)
+    cv.imwrite('hsi_lwpImg.jpg', hsi)
+    cv.imwrite('hsi_lwpImg0.jpg', hsi[:,:,0])
+    print('hsi shape:' + str(hsi.shape))
     key = cv.waitKey(0)
     if key == ord('q'):
         cv.destroyAllWindows()
