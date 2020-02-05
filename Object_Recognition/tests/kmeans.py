@@ -119,7 +119,7 @@ def visualize(arr, image, n):
             # 对焦点区域进行颜色标记
             if arr[i, j] == which2render:
                 # gray[i*N:(i+1)*N, j*N:(j+1)*N] = 100
-                image[i*N:(i+1)*N, j*N:(j+1)*N, 2] = 255
+                image[i*n:(i+1)*n, j*n:(j+1)*n, 2] = 255
     # cv.imshow("after render", image)
     # cv.imshow("after render", cv.cvtColor(gray, cv.COLOR_GRAY2BGR))
     cv.imshow("after render", image)
@@ -159,6 +159,9 @@ def bi_means(dataset):
 
 def main(src):
     cv.namedWindow('input image', cv.WINDOW_NORMAL)
+    N = 10  # 小方格像素值
+    src = resize(src, N)
+    cv.imshow('input image', src)
     print("shape of input image: %s" % str(src.shape))
     dataset = pack_dataset(src, N)
     print('shape of processed data: %s' % str(dataset.shape))
@@ -185,7 +188,4 @@ if __name__ == '__main__':
     # FOR EXPERIMENT
     # src = cv.imread('../images/2.jpg')
     src = cv.imread('../images/26.jpg')
-    N = 10  # 小方格像素值
-    src = resize(src, N)
-    cv.imshow('input image', src)
     main(src)
