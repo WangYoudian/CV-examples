@@ -3,8 +3,7 @@ from sklearn.cluster import KMeans
 import numpy as np
 from collections import Counter
 from hog import Hog_descriptor
-from hsi import rgbtohsi, calculate
-from features import hog_feature
+from hsi import rgbtohsi
 from resize import resize
 
 
@@ -158,8 +157,9 @@ def bi_means(dataset):
 
 
 def main(src):
-    cv.namedWindow('input image', cv.WINDOW_NORMAL)
+    cv.namedWindow('input image', 1)
     N = 10  # 小方格像素值
+    src = cv.imread(src)
     src = resize(src, N)
     cv.imshow('input image', src)
     print("shape of input image: %s" % str(src.shape))
@@ -173,19 +173,19 @@ def main(src):
 
 if __name__ == '__main__':
     # FOR TEST
-    # src = cv.imread('../src.jpg')
-    # src = cv.imread('../background/1.jpg')
-    # src = cv.imread('../background/2.jpg')
-    # src = cv.imread('../background/10.jpg')
-    # src = cv.imread('../background/4.jpg')
-    # src = cv.imread('../background/5.jpg')
-    # src = cv.imread('../background/6.jpg')
-    # src = cv.imread('../background/7.jpg')
-    # src = cv.imread('../background/8.jpg')
-    # src = cv.imread('../background/9.jpg')
-    # src = cv.imread('../background.jpg')
+    # src = '../src.jpg'
+    # src = ('../background/1.jpg')
+    # src = ('../background/2.jpg')
+    # src = ('../background/10.jpg')
+    # src = ('../background/4.jpg')
+    # src = ('../background/5.jpg')
+    # src = ('../background/6.jpg')
+    # src = ('../background/7.jpg')
+    # src = ('../background/8.jpg')
+    # src = ('../background/9.jpg')
+    # src = ('../background.jpg')
 
     # FOR EXPERIMENT
-    # src = cv.imread('../images/2.jpg')
-    src = cv.imread('../images/26.jpg')
+    # src = ('../images/2.jpg')
+    src = '../images/26.jpg'
     main(src)
