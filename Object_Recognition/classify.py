@@ -51,41 +51,22 @@ def pack_dataset(image, n):
     return np.array(dataset)
 
 
-def visualize(arr, image, n):
-    """
-    根据传入的image和n，resize arr数组为2D适配image规格，并据此渲染原图
-    :param arr:
-    :param image:
-    :param n:
-    :return:
-    """
-    gray = cv.cvtColor(image, cv.COLOR_RGB2GRAY)
-    h, w = gray.shape[:2]
-    h //= n
-    w //= n
-    # FIX A BUG BY RANDOM ALLOCATION OF 2_MEANS CLASSIFIER
-    counter = Counter(arr)
-    which2render = 1 if counter[0]>counter[1] else 0
-    arr = np.reshape(arr, (h, w))
-    for i in range(h):
-        for j in range(w):
-            # 对焦点区域进行颜色标记
-            if arr[i, j] == which2render:
-                # gray[i*N:(i+1)*N, j*N:(j+1)*N] = 100
-                image[i*n:(i+1)*n, j*n:(j+1)*n, 1] = 255
-    # cv.imshow("after render", cv.cvtColor(gray, cv.COLOR_GRAY2BGR))
-    # cv.imshow("after render", image)
-    return image
-
-
 def connected_areas(shape, arr, n):
+    """
+    :param shape: [h, w]
+    :param arr: 二分类的预测数据
+    :param n: 小正方形边长
+    :return: 包含连通域信息的二维数组
+    """
     h, w = shape
     h //= n
     w //= n
     counter = Counter(arr)
+    # 防止二分类随机性造成的标记错误（0标为1,1标为0）
     minor = 1 if counter[0] > counter[1] else 0
     arr = np.reshape(arr, (h, w))
     if minor == 0:
+        # 将0换成1，将1换成0
         arr = 1 - arr
     # 变为二值图像数据形式
     arr[arr==minor] = 255
@@ -99,11 +80,13 @@ def connected_areas(shape, arr, n):
         x1, y1, x2, y2 = h, w, 0, 0
         if len(area) < 3:
             continue
+        # 提取最左上和右下的坐标
         for point in area:
             x1 = point[0] if point[0] < x1 else x1
             x2 = point[0] if point[0] > x2 else x2
             y1 = point[1] if point[1] < y1 else y1
             y2 = point[1] if point[1] > y2 else y2
+        # 还原为原图的比例
         result.append([x1*n, y1*n, x2*n, y2*n, 1])
     return np.array(result)
 
@@ -120,25 +103,22 @@ def bi_means(dataset):
     return label_pred
 
 
-def main(src):
+def process(src):
     """
-    image object
+    接收cv.imread对象，返回连通域的数组
     :param src:
     :return:
     """
     N = 10  # 小方格像素值
     src = resize(src, N)
     # cv.imshow('input image', src)
-    print("shape of input image: %s" % str(src.shape))
+    # print("shape of input image: %s" % str(src.shape))
     dataset = pack_dataset(src, N)
-    print('shape of processed data: %s' % str(dataset.shape))
+    # print('shape of processed data: %s' % str(dataset.shape))
     labels = bi_means(dataset)
-    render = visualize(labels, src, N)
     res = connected_areas(src.shape[:2], labels, N)
-    print('Interesting area:%s' % str(res))
-    # cv.waitKey(500)
-    # cv.destroyAllWindows()
-    return res, render
+    # print('Interesting area:%s' % str(res))
+    return res
 
 
 if __name__ == '__main__':
@@ -153,7 +133,7 @@ if __name__ == '__main__':
         # path = 'images/26.jpg'
         src = cv.imread(path)
         try:
-            ans, render = main(src)
+            ans, render = process(src)
         except:
             continue
         cv.imwrite('results/'+path.split('.')[0].replace("images", "")+'_detection'+'.jpg', render)
@@ -162,5 +142,5 @@ if __name__ == '__main__':
     # path = 'images/26.jpg'
     # path = ('images/1.jpg')
     # src = cv.imread(path)
-    # ans, render = main(src)
+    # ans, render = process(src)
     # cv.imwrite('results/'+path.split('.')[0].replace("images", "")+'_detection'+'.jpg', render)
