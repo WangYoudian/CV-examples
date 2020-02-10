@@ -122,25 +122,8 @@ def process(src):
 
 
 if __name__ == '__main__':
-    # batch execution
-    import os
-    for file in os.listdir('images'):
-        path = 'images/' + file
-        print('Now executing', path)
-        # FOR EXPERIMENT
-        # path = ('images/1.jpg')
-        # path = ('images/11.jpg')
-        # path = 'images/26.jpg'
-        src = cv.imread(path)
-        try:
-            ans, render = process(src)
-        except:
-            continue
-        cv.imwrite('results/'+path.split('.')[0].replace("images", "")+'_detection'+'.jpg', render)
-
     # manually
-    # path = 'images/26.jpg'
+    path = 'images/26.jpg'
     # path = ('images/1.jpg')
-    # src = cv.imread(path)
-    # ans, render = process(src)
-    # cv.imwrite('results/'+path.split('.')[0].replace("images", "")+'_detection'+'.jpg', render)
+    src = cv.imread(path)
+    ans = process(src)
