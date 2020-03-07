@@ -81,6 +81,11 @@ class Hog_descriptor():
         return orientation_centers
 
     def get_closest_bins(self, gradient_angle):
+        """
+        根据angle_unit参数将该像素梯度放入对应的bin内
+        :param gradient_angle:
+        :return:
+        """
         idx = int(gradient_angle / self.angle_unit)
         mod = gradient_angle % self.angle_unit
         return idx, (idx + 1) % self.bin_size, mod

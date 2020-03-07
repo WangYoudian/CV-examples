@@ -1,3 +1,4 @@
+import time
 import cv2 as cv
 from sklearn.cluster import KMeans
 import numpy as np
@@ -42,8 +43,10 @@ def split_cells(image, n, dy=10, dx=10):
 def pack_dataset(image, n):
     # hog = Hog_descriptor(cv.cvtColor(image, cv.COLOR_RGB2GRAY), cell_size=8, bin_size=8)
     # vector, window1 = hog.extract()
+    # TODO:5s
     window2 = rgbtohsi(image)
     dataset = []
+    # TODO:0.002s
     cells_2 = split_cells(window2, n)
     for i in range(len(cells_2)):
         array = np.array(cells_2[i], np.int8).ravel()
@@ -73,8 +76,8 @@ def connected_areas(shape, arr, n):
     binary_img = arr
     binary_img = Seed_Filling(binary_img, NEIGHBOR_HOODS_8)
     binary_img, points = reorganize(binary_img)
-    print(binary_img, points)
-    print(len(points))
+    # print(binary_img, points)
+    # print(len(points))
     result = []
     for area in points:
         x1, y1, x2, y2 = h, w, 0, 0
@@ -109,21 +112,28 @@ def process(src):
     :param src:
     :return:
     """
-    N = 10  # 小方格像素值
+    N = 20  # 小方格像素值
     src = resize(src, N)
     # cv.imshow('input image', src)
     # print("shape of input image: %s" % str(src.shape))
+    # TODO:5s
     dataset = pack_dataset(src, N)
     # print('shape of processed data: %s' % str(dataset.shape))
+    # TODO：0.13s
     labels = bi_means(dataset)
+    # TODO：0.004s
     res = connected_areas(src.shape[:2], labels, N)
-    # print('Interesting area:%s' % str(res))
+    print('Interesting area:%s' % str(res))
     return res
 
 
 if __name__ == '__main__':
     # manually
+    start = cv.getTickCount()
     path = 'images/26.jpg'
     # path = ('images/1.jpg')
     src = cv.imread(path)
+    end = cv.getTickCount()
+    print("time costs:%.3f s" % ((end-start)/cv.getTickFrequency()))
     ans = process(src)
+
